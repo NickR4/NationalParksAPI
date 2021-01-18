@@ -1,15 +1,27 @@
-function findPark(){
-  console.log("find park function triggered");
-  var state = document.getElementById("stateID").value;
-  var count = document.getElementById("resultsLimit").value;
-    fetch('https://developer.nps.gov/api/v1/parks?stateCode='+state+'&limit='+count+'&api_key=g7OL9gTmepIfiTvle3meOMBXkc5z38ydtLTUNu5c')
-    .then(response => response.json())
-    .then(responseJson => displayParks(responseJson)); 
-    
+'use strict';
+var state = document.getElementById("stateID").value;
+var count = document.getElementById("resultsLimit").value;
+const apiKey = 'g7OL9gTmepIfiTvle3meOMBXkc5z38ydtLTUNu5c';
+const searchURL = 'https://developer.nps.gov/api/v1/parks?stateCode=';
+var searchString = "";
+
+function createSearchString(state,count){
+  console.log('create searchString function running');
+  searchString = searchURL+state+'&limit='+count+'&api_key='+apiKey;
 }
 
+function findPark(){
+  console.log("find park function triggered");
+   createSearchString(state,count);
+    fetch(searchString)
+    .then(response => response.json())
+    .then(responseJson => displayParks(responseJson));  
+}
+
+
+
+
 function displayParks(responseJson){
-  console.log(responseJson.data[0].addresses[0]);
    $('#results-list').empty();
   for (let i = 0; i < responseJson.data.length; i++){
     $('#results-list').append(
@@ -17,7 +29,6 @@ function displayParks(responseJson){
       <h5>${responseJson.data[i].addresses[0].city}, ${responseJson.data[i].addresses[0].stateCode}</h5>
       <p>${responseJson.data[i].description}</p>
       <h4><a href="${responseJson.data[i].url}">${responseJson.data[i].url}</a></h4>
-      
       </li>`
     )};
   $('#results').removeClass('hidden');
@@ -33,3 +44,5 @@ function watchForm() {
 $(function() {
   watchForm();
 });
+
+//how to access and display and manipulate the addresses nest array
